@@ -9,6 +9,8 @@ A saltstack formula that configures Percona Server.
 
 - [`client`](#client)
 
+- [`jemalloc`](#jemalloc)
+
 - [`server`](#server)
 
 - [`qpress`](#qpress)
@@ -26,6 +28,10 @@ A saltstack formula that configures Percona Server.
 ### Client
 
 - Installs Percona Server client package.
+
+### Jemalloc
+
+- Installs jemalloc package to be used by Percona.
 
 ### Qpress
 

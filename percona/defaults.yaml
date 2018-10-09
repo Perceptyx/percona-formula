@@ -45,6 +45,7 @@ Ubuntu:
   debconf_utils: debconf-utils
   defaults_extra_file: /etc/mysql/debian.cnf
   dev: libmysqlclient-dev
+  jemalloc: libjemalloc1
   config:
     {%- if major_version == '5.7' %}
     file: /etc/mysql/percona-server.conf.d/percona.cnf
