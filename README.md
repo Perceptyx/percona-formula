@@ -55,6 +55,7 @@ A saltstack formula that configures Percona Server.
 ### Toolkit
 
 - Installs Percona Toolkit
+- You may declare a version within your pillar `percona: toolkit_version`.  If no version is defined, the LATEST version will be used.  Please note that LATEST ensures the most up-to-date version is installed.  See defaults.yaml.
 
 ### Xtrabackup
 
