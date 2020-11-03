@@ -24,6 +24,13 @@
 {%- set xtrabackup_pkg = 'percona-xtrabackup-24' %}
 {% endif %}
 {% set innodb_buffer_pool_size = salt['grains.get']('mem_total', '1024') * 0.6 %}
+{# set variables for percona-toolkit #}
+{%- if salt['pillar.get']('percona:toolkit_version') is defined and salt['pillar.get']('percona:toolkit_version') != '' %}
+{%- set toolkit_version = salt['pillar.get']('percona:toolkit_version') %}
+{% else %}
+{# warning, LATEST will always install the most recent version available #}
+{%- set toolkit_version = 'LATEST' %}
+{% endif %}
 {% load_yaml as rawmap %}
 
 Ubuntu:
@@ -42,6 +49,7 @@ Ubuntu:
   version_suffix: {{ version }}-1.{{ grains['oscodename'] }}_{{ os_arch }}.deb
   percona_url: {{ percona_url }}
 {% endif %}
+  toolkit_version: {{ toolkit_version }}
   service: mysql
   python: python3-mysqldb
   debconf_utils: debconf-utils
