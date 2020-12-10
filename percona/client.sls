@@ -9,7 +9,7 @@ include:
 
 mysql-pkg:
 {# We want to install a custom version and it's not in repository #}
-{%- if mysql.version is defined and salt['cmd.retcode']('apt-cache madison ' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ ' | grep -qP \'(^|\s)\K' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ '(?=\s|$)\' | grep -qP \'(^|\s)\K' ~ mysql.version ~ '-1(?=\s|$)\'', python_shell=True) == 1 %}
+{%- if mysql.version is defined and salt['cmd.retcode']('apt-cache madison ' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ ' | grep -qP \'(^|\s)\K' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ '(?=\s|$)\' | grep -qP \'(^|\s)\K' ~ mysql.version ~ '-[0-9](?=\s|$)\'', python_shell=True) == 1 %}
 {%- set libperconaserverclient_version = salt['cmd.run_stdout']('curl -sL ' ~ mysql.percona_url ~ ' | grep -oP "\/downloads[^\s>]+libperconaserverclient([0-9|\.]*)_[^\s>]+\.' ~ grains['oscodename'] | lower ~ '_' ~ mysql.os_arch ~ '\.deb" | sed -n "s/\/downloads\(.*\)libperconaserverclient\([0-9|\.]*\)\_\(.*\)/\\2/p"', python_shell=True) %}
   pkg.installed:
     - sources:

@@ -6,7 +6,7 @@ include:
 {% set mysql = salt['grains.filter_by'](rawmap, grain='os', merge=salt['pillar.get']('percona:lookup')) %}
 
 {# We want to install a custom version and it's not in repository #}
-{%- if (mysql.version is defined and mysql.version != '') and salt['cmd.retcode']('apt-cache madison ' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ ' | grep -qP \'(^|\s)\K' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ '(?=\s|$)\' | grep -qP \'(^|\s)\K' ~ mysql.version ~ '-1(?=\s|$)\'', python_shell=True) == 1 %}
+{%- if (mysql.version is defined and mysql.version != '') and salt['cmd.retcode']('apt-cache madison ' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ ' | grep -qP \'(^|\s)\K' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ '(?=\s|$)\' | grep -qP \'(^|\s)\K' ~ mysql.version ~ '-[0-9](?=\s|$)\'', python_shell=True) == 1 %}
 percona-custom-version:
   pkg.latest:
     - pkgs:
