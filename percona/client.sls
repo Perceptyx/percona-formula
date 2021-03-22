@@ -24,7 +24,11 @@ mysql-pkg:
       - sls: percona.custom_version
 {% else %}
   pkg.installed:
+{%- if 'mysql80' in grains.get('roles','') %}
+    - name: {{ mysql.pkg_prefix }}-client
+{% else %}
     - name: {{ mysql.pkg_prefix }}-client-{{ mysql.major_version }}
+{% endif %}
     - require:
       - debconf: mysql_debconf
 {% endif %} {# if mysql.version is defined... #}

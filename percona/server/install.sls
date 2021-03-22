@@ -13,6 +13,22 @@ include:
 {% set mysql_host = salt['pillar.get']('percona:server:host', 'localhost') %}
 {% set defaults_extra_file = salt['pillar.get']('percona:defaults_extra_file', mysql.defaults_extra_file) %}
 
+{%- if 'mysql80' in grains.get('roles','') %}
+
+install-80-repo:
+  pkg.installed:
+    - name: percona-release
+    - require_in:
+        - cmdL enable-80-repo
+
+enable-80-repo:
+  cmd.run:
+    - name: /usr/bin/percona-release setup ps80
+    - require_in:
+        - pkgrepo: percona-repository
+
+{% endif %}
+
 mysql_debconf_utils:
   pkg.installed:
     - name: {{ mysql.debconf_utils }}
@@ -42,7 +58,12 @@ percona-server-pkg:
       - sls: percona.custom_version
 {% else %}
   pkg.installed:
+
+{%- if 'mysql80' in grains.get('roles','') %}
+    - name: {{ mysql.pkg_prefix }}-server
+{% else %}
     - name: {{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}
+{% endif %}
     - require:
       - debconf: mysql_debconf
 {% endif %} {# if mysql.version is defined... #}
