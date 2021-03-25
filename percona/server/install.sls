@@ -19,7 +19,7 @@ install-80-repo:
   pkg.installed:
     - name: percona-release
     - require_in:
-        - cmdL enable-80-repo
+        - cmd: enable-80-repo
 
 enable-80-repo:
   cmd.run:
