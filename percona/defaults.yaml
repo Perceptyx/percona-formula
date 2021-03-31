@@ -68,7 +68,12 @@ Ubuntu:
         nice: 0
       mysqld:
         bind_address: 0.0.0.0
+        {%- if major_version == '5.7' %}
         character_set_server: utf8
+        {% else %}
+        character_set_server: utf8mb4 # this is recommended by a warning printed by mysqld if
+                                      # utf8 is used on 8.0
+        {% endif %}
         default_storage_engine: InnoDB
         # Percona doesn't start if you don't have a pid-file argument
         # pid_file doesn't work either
@@ -81,7 +86,9 @@ Ubuntu:
         skip_name_resolve: noarg_present
         key_buffer_size: 32M
         myisam_recover_options: FORCE,BACKUP
-        innodb: FORCE
+        {%- if major_version == '5.7' %}
+        innodb: FORCE # this is deprecated in 8.0, might as well remove it
+        {% endif %}
         innodb_strict_mode: 1
         max_allowed_packet: 16M
         max_connect_errors: 1000000
