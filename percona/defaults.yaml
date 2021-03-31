@@ -57,11 +57,7 @@ Ubuntu:
   defaults_extra_file: /etc/mysql/debian.cnf
   dev: libmysqlclient-dev
   config:
-    {%- if major_version == '5.7' %}
     file: /etc/mysql/percona-server.conf.d/percona.cnf
-    {% else %}
-    file: /etc/mysql/conf.d/percona.cnf
-    {% endif %}
     sections:
       client:
         loose_default_character_set: utf8
@@ -111,8 +107,10 @@ Ubuntu:
         max_connections: 300
         max_heap_table_size: 32M
         open_files_limit: 800000
+        {%- if major_version == '5.7' %}
         query_cache_size: 0
         query_cache_type: 0
+        {% endif %} ## the query cache is gone from 8
         table_definition_cache: 4096
         table_open_cache: 10240
         thread_cache_size: 100

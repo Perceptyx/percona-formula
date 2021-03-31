@@ -12,8 +12,14 @@ include:
 {% set mysql_root_password = salt['pillar.get']('percona:server:root_password', salt['random.get_str'](32)) %}
 {% set mysql_host = salt['pillar.get']('percona:server:host', 'localhost') %}
 {% set defaults_extra_file = salt['pillar.get']('percona:defaults_extra_file', mysql.defaults_extra_file) %}
+{%- if salt['pillar.get']('percona:version') is defined and salt['pillar.get']('percona:version') != '' %}
+{%- set version = salt['pillar.get']('percona:version') %}
+{%- set major_version = version.split('.')[0] ~ '.' ~ version.split('.')[1] %}
+{% else %}
+{%- set major_version = '5.7' %}
+{% endif %}
 
-{%- if 'mysql80' in grains.get('roles','') %}
+{%- if major_version == '8.0' %}
 
 install-80-repo:
   pkg.installed:
@@ -59,7 +65,7 @@ percona-server-pkg:
 {% else %}
   pkg.installed:
 
-{%- if 'mysql80' in grains.get('roles','') %}
+{%- if major_version == '8.0' %}
     - name: {{ mysql.pkg_prefix }}-server
 {% else %}
     - name: {{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}
