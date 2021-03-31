@@ -7,6 +7,13 @@ include:
 {% from "percona/defaults.yaml" import rawmap with context %}
 {%- set mysql = salt['grains.filter_by'](rawmap, grain='os', merge=salt['pillar.get']('percona:lookup')) %}
 
+{%- if salt['pillar.get']('percona:version') is defined and salt['pillar.get']('percona:version') != '' %}
+{%- set version = salt['pillar.get']('percona:version') %}
+{%- set major_version = version.split('.')[0] ~ '.' ~ version.split('.')[1] %}
+{% else %}
+{%- set major_version = '5.7' %}
+{% endif %}
+
 mysql-pkg:
 {# We want to install a custom version and it's not in repository #}
 {%- if mysql.version is defined and salt['cmd.retcode']('apt-cache madison ' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ ' | grep -qP \'(^|\s)\K' ~ mysql.pkg_prefix ~ '-' ~ mysql.major_version ~ '(?=\s|$)\' | grep -qP \'(^|\s)\K' ~ mysql.version ~ '-[0-9](?=\s|$)\'', python_shell=True) == 1 %}
@@ -24,7 +31,11 @@ mysql-pkg:
       - sls: percona.custom_version
 {% else %}
   pkg.installed:
+{%- if major_version == '8.0' %}
+    - name: {{ mysql.pkg_prefix }}-client
+{% else %}
     - name: {{ mysql.pkg_prefix }}-client-{{ mysql.major_version }}
+{% endif %}
     - require:
       - debconf: mysql_debconf
 {% endif %} {# if mysql.version is defined... #}
