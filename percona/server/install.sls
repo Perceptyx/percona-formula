@@ -24,6 +24,9 @@ mysql_debconf:
         '{{ mysql.pkg_prefix }}-server/root_password': {'type': 'password', 'value': '{{ mysql_root_password }}'}
         '{{ mysql.pkg_prefix }}-server/root_password_again': {'type': 'password', 'value': '{{ mysql_root_password }}'}
         '{{ mysql.pkg_prefix }}-server/start_on_boot': {'type': 'boolean', 'value': 'true'}
+        '{{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}/root-pass': {'type': 'password', 'value': '{{ mysql_root_password }}'}
+        '{{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}/re-root-pass': {'type': 'password', 'value': '{{ mysql_root_password }}'}
+        '{{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}/start_on_boot': {'type': 'boolean', 'value': 'true'}
     - require_in:
       - pkg:  percona-server-pkg
     - require:
