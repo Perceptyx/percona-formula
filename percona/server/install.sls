@@ -8,10 +8,10 @@ include:
   - percona.custom_version
 
 {% set mysql = salt['grains.filter_by'](rawmap, grain='os', merge=salt['pillar.get']('percona:lookup')) %}
-{% set mysql_root_user = salt['pillar.get']('percona:server:root_user', 'root') %}
-{% set mysql_root_password = salt['pillar.get']('percona:server:root_password', salt['random.get_str'](32)) %}
-{% set mysql_host = salt['pillar.get']('percona:server:host', 'localhost') %}
-{% set defaults_extra_file = salt['pillar.get']('percona:defaults_extra_file', mysql.defaults_extra_file) %}
+{% set mysql_root_user = salt['pillar.get']('mysql:server:root_user', 'root') %}
+{% set mysql_root_password = salt['pillar.get']('mysql:server:root_password', salt['random.get_str'](32)) %}
+{% set mysql_host = salt['pillar.get']('mysql:server:host', 'localhost') %}
+{% set defaults_extra_file = salt['pillar.get']('mysql:defaults_extra_file', mysql.defaults_extra_file) %}
 
 mysql_debconf_utils:
   pkg.installed:
@@ -24,6 +24,9 @@ mysql_debconf:
         '{{ mysql.pkg_prefix }}-server/root_password': {'type': 'password', 'value': '{{ mysql_root_password }}'}
         '{{ mysql.pkg_prefix }}-server/root_password_again': {'type': 'password', 'value': '{{ mysql_root_password }}'}
         '{{ mysql.pkg_prefix }}-server/start_on_boot': {'type': 'boolean', 'value': 'true'}
+        '{{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}/root-pass': {'type': 'password', 'value': '{{ mysql_root_password }}'}
+        '{{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}/re-root-pass': {'type': 'password', 'value': '{{ mysql_root_password }}'}
+        '{{ mysql.pkg_prefix }}-server-{{ mysql.major_version }}/start_on_boot': {'type': 'boolean', 'value': 'true'}
     - require_in:
       - pkg:  percona-server-pkg
     - require:
