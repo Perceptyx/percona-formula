@@ -16,7 +16,7 @@
 {%- set version_suffix = "{{ mysql.version }}-1.{{ grains['oscodename'] }}_{{ os_arch }}.deb" %}
 {%- set percona_url = "https://www.percona.com/downloads/Percona-Server-" ~ major_version ~ "/Percona-Server-" ~ version ~ "/binary/" ~ grains['os_family'] | lower ~ "/" ~ grains['oscodename'] | lower ~ "/" ~ tarball_os_arch | lower ~ "/" %}
 {% else %}
-{%- set major_version = '5.6' %}
+{%- set major_version = salt['pillar.get']('mysql:major_version') %}
 {% endif %}
 {%- if salt['pillar.get']('percona:xtrabackup_pkg') is defined and salt['pillar.get']('percona:xtrabackup_pkg') != '' %}
 {%- set xtrabackup_pkg = salt['pillar.get']('percona:xtrabackup_pkg') %}
